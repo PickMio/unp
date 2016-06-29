@@ -21,7 +21,7 @@ int Bind(int sockfd, const struct sockaddr *myaddr, socklen_t addrlen);
 int Listen(int sockfd, int backlog);
 int Accept(int sockfd, struct sockaddr *cliaddr, socklen_t *addrlen);
 int Close(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);
-void err_quit(string msg, string func, long line);
+void err_quit(string msg, string func, string file, long line);
 int cur_time(string& tStr);
 
 
