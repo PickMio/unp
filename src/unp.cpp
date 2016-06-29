@@ -101,11 +101,11 @@ int Close(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen)
 	return 0;
 }
 
-void err_quit(string msg, string func, long line)
+void err_quit(string msg, string func, string file, long line)
 {
 	string date;
 	cur_time(date);
-    cout << date << "FUNCTION::" <<func << " LINE[" <<line << "] "<< msg << endl;
+    cout << date << "FILE[" << file <<"] " << " LINE[" <<line << "] " << "FUNCTION::" << func << " MSG[" << msg << "] " << endl;
 	exit(0);
 }
 
