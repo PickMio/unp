@@ -16,9 +16,8 @@ $(TARGET): $(objs)
 $(objs): %.o: %.cpp
 	$(CPP) $(INCLUDE) -c $< -o $@
 
-.PHONY: clean
+.PHONY: clean run
 clean:
 	-rm -f $(BINDIR)/$(TARGET) $(SRC)/$(objs)
-.PHONY: run
 run:
 	$(BINDIR)/$(TARGET)
