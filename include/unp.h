@@ -6,9 +6,14 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <string>
+#include <cstring> /*包含了string.h*/
 #include <iostream>
 #include <stdlib.h>
+#include <time.h>
+#include <exception>
 using namespace std;
+
+typedef struct sockaddr SA;
 /**
  *    family   AF_INET, AF_INET6, AF_LOCAL, AF_ROUTE, AF_KEY 
  *    type     SOCK_STREAM, SOCK_DGRAM, SOCK_SEQPACKET, SOCK_RAW
@@ -20,13 +25,8 @@ int Connect(int sockfd, const struct sockaddr *servaddr, socklen_t addrlen);
 int Bind(int sockfd, const struct sockaddr *myaddr, socklen_t addrlen);
 int Listen(int sockfd, int backlog);
 int Accept(int sockfd, struct sockaddr *cliaddr, socklen_t *addrlen);
-int Close(int sockfd, struct sockaddr *peeraddr, socklen_t *addrlen);
+int Close(int sockfd);
 void err_quit(string msg, string func, string file, long line);
 int cur_time(string& tStr);
-
-
-
-
-
-
+void Beater(int connfd);
 
