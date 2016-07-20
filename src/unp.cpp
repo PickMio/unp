@@ -9,7 +9,7 @@ int Socket(int family, int type, int protocol)
 	int n = 0;
     if((n = socket(family, type, protocol)) < 0)
 	{
-		err_quit("sock fail, ", __FUNCTION__, __FILE__, __LINE__);
+		err_quit("sock fail ", __FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return n;
@@ -20,7 +20,7 @@ int Connect(int sockfd, const struct sockaddr *servaddr, socklen_t addrlen)
 	int n = 0;
     if((n = connect(sockfd, servaddr, addrlen)) < 0)
 	{
-		err_quit("connect fail, ", __FUNCTION__, __FILE__, __LINE__);
+		err_quit("connect fail ", __FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return n;
@@ -31,7 +31,7 @@ int Bind(int sockfd, const struct sockaddr *myaddr, socklen_t addrlen)
 	int n = 0;
     if((n = bind(sockfd, myaddr, addrlen)) < 0)
 	{
-		err_quit("bind fail, ", __FUNCTION__, __FILE__, __LINE__);
+		err_quit("bind fail ", __FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return n;
@@ -42,7 +42,7 @@ int Listen(int sockfd, int backlog)
 	int n = 0;
     if((n = listen(sockfd, backlog)) < 0)
 	{
-		err_quit("listen fail, ", __FUNCTION__, __FILE__, __LINE__);
+		err_quit("listen fail ", __FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return n;
@@ -54,12 +54,12 @@ int Accept(int sockfd, struct sockaddr *cliaddr, socklen_t *addrlen)
 	int confd = -1;
     if((confd = accept(sockfd, cliaddr, addrlen)) < 0)
 	{
-		err_quit("accept fail, ", __FUNCTION__, __FILE__, __LINE__);
+		err_quit("accept fail ", __FUNCTION__, __FILE__, __LINE__);
 	}
 
 	return confd;/*返回监听套接字*/
 }
-
+/*
 int Close(int sockfd)
 {
 	int n = 0;
@@ -70,12 +70,12 @@ int Close(int sockfd)
 
 	return n;
 }
-
+*/
 void err_quit(string msg, string func, string file, long line)
 {
 	string date;
 	cur_time(date);
-    cout << date << "FILE[" << file <<"] " << " LINE[" <<line << "] " << "FUNCTION::" << func << " MSG[" << msg << "] " << endl;
+    cout << date << "FILE[" << file <<"] " << " LINE[" <<line << "] " << "FUNCTION::" << func << " MSG[" << msg << "] " << "ERRNO[" << errno <<"]" <<" HINT["<< strerror(errno)<<"]"<< endl;
 	exit(0);
 }
 
@@ -86,6 +86,88 @@ int cur_time(string& tStr)
     string tmp(ctime(&t));
 	tStr.assign(tmp.begin(), tmp.end());
 	return 0;
+
+}
+
+int Readline(int fd, void const *vptr, size_t maxlen)
+{
+	int n = 0;
+    if(fd < 0)
+	{
+		err_quit("Readn fd is less than 0.", __FUNCTION__, __FILE__, __LINE__);
+	}
+
+    char c, *ptr;
+	size_t rc = 0;
+	ptr = (char*)vptr;	
+	if(NULL == vptr)
+	{
+		err_quit("vptr is NULL!", __FUNCTION__, __FILE__, __LINE__);
+	}
+
+	for(n = 1; n < maxlen; ++n)
+	{
+		if( 1 == (rc = read(fd, &c, 1)))
+		{
+			*ptr++ = c;
+			if('\n' == c)
+			{
+				break;
+			}
+		}
+		else if( 0 == rc)
+		{
+			*ptr = '\0';
+			return (n - 1); //EOF
+		}
+		else
+		{
+			if(EINTR == errno)
+			{
+				--n;
+				continue;
+			}
+			cout << "Readn an error occoured! id is " << errno << endl;
+			return -1;
+		}
+	
+	}
+
+	*ptr = 0;
+	return (n);
+}
+
+int Written(int fd, void const *vptr, size_t n)
+{
+	size_t nleft;
+	ssize_t nwritten;
+	char *ptr;
+
+	ptr = (char*)vptr;
+	nleft = n;
+	for(nleft = n; nleft > 0;)
+	{
+		if( (nwritten = write(fd, ptr, nleft)) <= 0)
+		{
+			if(nwritten < 0 && EINTR == errno)
+			{
+				nwritten = 0;
+			}
+			else
+			{
+				cout << "Written an error occoured! id is " << errno << endl;
+				return (-1); //error
+			}
+		}
+
+		nleft -= nwritten;
+		ptr += nwritten;
+	
+	}
+
+	return (n);
+
+
 
 }
 /*
@@ -146,4 +228,5 @@ void str_cli(FILE *fp, int sockfd)
 
 }
 */
+
 

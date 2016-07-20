@@ -12,13 +12,20 @@ objs:=$(sources:.cpp=.o)
 
 $(TARGET): $(objs)
 	@mkdir -p $(BINDIR)
-	$(CPP) $(DEBUG) $(objs) -o $(BINDIR)/$(TARGET)
+	$(CPP) $(DEBUG) $(INCLUDE) $(objs) -o $(BINDIR)/$(TARGET)
 	@chmod 755 $(BINDIR)/$(TARGET)
+
 $(objs): %.o: %.cpp
 	$(CPP) $(DEBUG) $(INCLUDE) -c $< -o $@
 
-.PHONY: clean run
+.PHONY: clean run dump
 clean:
 	-rm -f $(BINDIR)/$(TARGET) $(SRC)/$(objs)
 run:
 	$(BINDIR)/$(TARGET)
+
+dump:
+	rm -f $(SRC)/$(TARGET).o
+	ar rcs libunp.a $(SRC)/*.o
+	cp -f libunp.a /home/cmio/projects/third/lib/
+
