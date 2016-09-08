@@ -7,7 +7,6 @@ DEBUG=-g
 BINDIR:=$(DIR)/bin
 TARGET:=main
 sources:=$(wildcard $(SRC)/*.cpp)
-#objects:=$(subset $(SRC)/, $(BINDIR)/, $(sources))
 objs:=$(sources:.cpp=.o)
 CFLAGS:=-fPIC
 
