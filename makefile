@@ -9,6 +9,7 @@ TARGET:=main
 sources:=$(wildcard $(SRC)/*.cpp)
 #objects:=$(subset $(SRC)/, $(BINDIR)/, $(sources))
 objs:=$(sources:.cpp=.o)
+CFLAGS:=-fPIC
 
 $(TARGET): $(objs)
 	@mkdir -p $(BINDIR)
@@ -16,7 +17,7 @@ $(TARGET): $(objs)
 	@chmod 755 $(BINDIR)/$(TARGET)
 
 $(objs): %.o: %.cpp
-	$(CPP) $(DEBUG) $(INCLUDE) -c $< -o $@
+	$(CPP) $(DEBUG) $(INCLUDE) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean run dump
 clean:
